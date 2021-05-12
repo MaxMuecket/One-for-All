@@ -31,12 +31,7 @@ const start = async () => {
     switch (command) {
       case 'list':
         {
-          const service = await selectService([
-            'Github',
-            'Codewars',
-            'Google',
-            '',
-          ]);
+          const service = await selectService(['Github', 'Codewars', 'Google']);
           printPassword(service);
         }
         break;
