@@ -20,7 +20,7 @@ const start = async () => {
 
   /* Solution with recursion */
   const mainPassword = await askForMainPassword();
-  if (!isMainPasswordValid(mainPassword)) {
+  if (!(await isMainPasswordValid(mainPassword))) {
     console.log('Is invalid');
     start(); // Recursion
   } else {
