@@ -1,9 +1,16 @@
-import { askForMainPassword } from './utils/questions';
+import { printPassword } from './utils/messages';
+import {
+  askForMainPassword,
+  askForCommand,
+  addNewCredential,
+  selectService,
+} from './utils/questions';
 import { isMainPasswordValid } from './utils/validation';
 
 // function start() {
 const start = async () => {
   /* Solution with while */
+
   // let mainPassword = await askForMainPassword();
   // while (!isMainPasswordValid(mainPassword)) {
   //   console.log('Is invalid');
@@ -18,9 +25,28 @@ const start = async () => {
     start(); // Recursion
   } else {
     console.log('Is valid');
-  }
 
-  /* ToDo */
-  //   askForCommand();
+    const command = await askForCommand();
+
+    switch (command) {
+      case 'list':
+        {
+          const service = await selectService([
+            'Github',
+            'Codewars',
+            'Google',
+            '',
+          ]);
+          printPassword(service);
+        }
+        break;
+      case 'add':
+        {
+          const newCredential = await addNewCredential();
+          console.log(newCredential);
+        }
+        break;
+    }
+  }
 };
 start();
