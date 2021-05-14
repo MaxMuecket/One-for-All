@@ -5,8 +5,8 @@ import {
   addNewCredential,
   selectService,
 } from './utils/questions';
-import { isMainPasswordValid } from './utils/validation';
-import { readCredentials } from './utils/credentials';
+import { isMainPasswordValid, isNewCredentialInDb } from './utils/validation';
+import { readCredentials, writeCredentials } from './utils/credentials';
 
 // function start() {
 const start = async () => {
@@ -45,12 +45,17 @@ const start = async () => {
           printPassword(service);
         }
         break;
-      case 'add':
+      case 'add': {
+        const newCredential = await addNewCredential();
+        const inDb = await isNewCredentialInDb(newCredential);
+        while (inDb === true) {
+          writeCredentials(newCredential);
+        }
         {
-          const newCredential = await addNewCredential();
-          console.log(newCredential);
+          console.log('The service already exist');
         }
         break;
+      }
     }
   }
 };
