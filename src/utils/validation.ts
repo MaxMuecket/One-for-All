@@ -3,7 +3,7 @@ import sha256 from 'crypto-js/sha256';
 import { readCredentials } from './credentials';
 import type { Credential } from '../types';
 
-export const isMainPasswordValid = async (
+export const validateMainPassword = async (
   plaintextPassword: string
 ): Promise<boolean> => {
   const origPasswordHash = await fs.readFile('./.password', 'utf-8');

@@ -1,12 +1,14 @@
-import { printPassword } from './utils/messages';
 import {
   askForMainPassword,
   askForCommand,
   addNewCredential,
   selectService,
 } from './utils/questions';
-import { isMainPasswordValid, isNewCredentialInDb } from './utils/validation';
+import { validateMainPassword, isNewCredentialInDb } from './utils/validation';
 import { readCredentials, writeCredentials } from './utils/credentials';
+import CryptoJS from 'crypto-js';
+
+// const { MongoClient } = require('mongodb');
 
 // function start() {
 const start = async () => {
@@ -19,9 +21,10 @@ const start = async () => {
   // }
   // console.log('Is valid');
 
-  /* Solution with recursion */
+  // Solution with recursion
+
   const mainPassword = await askForMainPassword();
-  if (!(await isMainPasswordValid(mainPassword))) {
+  if (!(await validateMainPassword(mainPassword))) {
     console.log('Is invalid');
     start(); // Recursion
   } else {
@@ -36,26 +39,42 @@ const start = async () => {
           const credentialServices = credentials.map(
             (credential) => credential.service
           );
+
+          if (credentials.length === 0) {
+            console.log('it´s empty');
+            break;
+          }
+
           const service = await selectService(credentialServices);
           const selectedService = credentials.find(
             (credential) => credential.service === service
           );
-          console.log(selectedService);
 
-          printPassword(service);
+          if (selectedService !== undefined) {
+            selectedService.password = CryptoJS.AES.decrypt(
+              selectedService.password,
+              mainPassword
+            ).toString(CryptoJS.enc.Utf8);
+            console.log(selectedService);
+          }
         }
+
         break;
-      case 'add': {
-        const newCredential = await addNewCredential();
-        const inDb = await isNewCredentialInDb(newCredential);
-        while (inDb === true) {
-          writeCredentials(newCredential);
-        }
+      case 'add':
         {
-          console.log('The service already exist');
+          let newCredential = await addNewCredential();
+          while (await isNewCredentialInDb(newCredential)) {
+            console.log(
+              `The chosen service ${newCredential.service} already exists. Please choose a new service name`
+            );
+            newCredential = await addNewCredential();
+          }
+          await writeCredentials(mainPassword, newCredential);
+          console.log(
+            `The service ${newCredential.service} has been added to the list`
+          );
         }
         break;
-      }
     }
   }
 };
