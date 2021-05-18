@@ -9,13 +9,18 @@ import {
 import { validateMainPassword, isNewCredentialInDb } from './utils/validation';
 import { readCredentials, writeCredentials } from './utils/credentials';
 import CryptoJS from 'crypto-js';
+import { connectDatabase } from './utils/db';
 
 dotenv.config();
 
 // function start() {
 console.log(process.env.MONGO_URL);
 const start = async () => {
-  // await connectDatabase(dataBaseURI);
+  if (process.env.MONGO_URL === undefined) {
+    throw new Error('Missing env MONGO_URL');
+  }
+
+  await connectDatabase(process.env.MONGO_URL);
 
   // const client = new MongoClient(uri);
 

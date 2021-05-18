@@ -26,10 +26,3 @@ export const writeCredentials = async (
   const newDB: DB = { credentials: [...oldCredential, newCredential] };
   await fs.writeFile('./db.json', JSON.stringify(newDB, null, 2));
 };
-
-// export function listDatabases(client):  async  Promise<> => {
-//   const databasesList = await client.db().admin().listDatabases();
-
-//   console.log('Databases:');
-//   databasesList.databases.forEach((db) => console.log(` - ${db.name}`));
-// }
