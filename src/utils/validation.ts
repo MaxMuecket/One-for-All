@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+// import fs from 'fs/promises';
 import sha256 from 'crypto-js/sha256';
 import { readCredentials } from './credentials';
 import type { Credential } from '../types';
@@ -6,7 +6,7 @@ import type { Credential } from '../types';
 export const validateMainPassword = async (
   plaintextPassword: string
 ): Promise<boolean> => {
-  const origPasswordHash = await fs.readFile('./.password', 'utf-8');
+  const origPasswordHash = process.env.MAIN_PASSWORD;
   const passwordHash = sha256(plaintextPassword).toString();
   return passwordHash === origPasswordHash;
 };

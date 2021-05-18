@@ -1,7 +1,10 @@
 // import fs from 'fs/promises';
+
 import type { Credential } from '../types';
 import CryptoJS from 'crypto-js';
 import { getCredentialsCollection } from './db';
+import { selectService } from './questions';
+
 // import { MongoClient } from 'mongodb';
 
 // type DB = {
@@ -14,7 +17,7 @@ export const readCredentials = async (): Promise<Credential[]> => {
   // return cursor.toArray();
 };
 
-export const writeCredentials = async (
+export const writeCredential = async (
   mainPassword: string,
   newCredential: Credential
 ): Promise<void> => {
@@ -26,5 +29,31 @@ export const writeCredentials = async (
   ).toString();
 
   // const newDB: DB = { credentials: [...oldCredential, newCredential] };
+
   await getCredentialsCollection().insertOne(newCredential);
+};
+
+export const selectCredential = async (): Promise<Credential> => {
+  const credentials = await readCredentials();
+  const credentialServices = credentials.map(
+    (credential) => credential.service
+  );
+  const service = await selectService(credentialServices);
+  const selectedCredential = credentials.find(
+    (credential) => credential.service === service
+  );
+  if (!selectedCredential) {
+    throw new Error('Can not find credential');
+  }
+  return selectedCredential;
+};
+
+export const deleteCredential = async (
+  credential: Credential
+): Promise<boolean> => {
+  const result = await getCredentialsCollection().deleteOne(credential);
+  if (result.deletedCount === undefined) {
+    return false;
+  }
+  return result.deletedCount > 0;
 };
