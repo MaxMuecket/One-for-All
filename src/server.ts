@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+
 import {
   askForMainPassword,
   askForCommand,
@@ -8,10 +10,27 @@ import { validateMainPassword, isNewCredentialInDb } from './utils/validation';
 import { readCredentials, writeCredentials } from './utils/credentials';
 import CryptoJS from 'crypto-js';
 
-// const { MongoClient } = require('mongodb');
+dotenv.config();
 
 // function start() {
+console.log(process.env.MONGO_URL);
 const start = async () => {
+  // await connectDatabase(dataBaseURI);
+
+  // const client = new MongoClient(uri);
+
+  // try {
+  //   await client.connect();
+
+  //   await listDatabases(client);
+  // } catch (e) {
+  //   console.error(e);
+  // } finally {
+  //   await client.close();
+  // }
+
+  // start().catch(console.error);
+
   /* Solution with while */
 
   // let mainPassword = await askForMainPassword();
