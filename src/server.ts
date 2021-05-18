@@ -1,11 +1,14 @@
-import { printPassword } from './utils/messages';
 import {
   askForMainPassword,
   askForCommand,
   addNewCredential,
   selectService,
 } from './utils/questions';
-import { isMainPasswordValid } from './utils/validation';
+import { validateMainPassword, isNewCredentialInDb } from './utils/validation';
+import { readCredentials, writeCredentials } from './utils/credentials';
+import CryptoJS from 'crypto-js';
+
+// const { MongoClient } = require('mongodb');
 
 // function start() {
 const start = async () => {
@@ -18,9 +21,10 @@ const start = async () => {
   // }
   // console.log('Is valid');
 
-  /* Solution with recursion */
+  // Solution with recursion
+
   const mainPassword = await askForMainPassword();
-  if (!(await isMainPasswordValid(mainPassword))) {
+  if (!(await validateMainPassword(mainPassword))) {
     console.log('Is invalid');
     start(); // Recursion
   } else {
@@ -31,14 +35,44 @@ const start = async () => {
     switch (command) {
       case 'list':
         {
-          const service = await selectService(['Github', 'Codewars', 'Google']);
-          printPassword(service);
+          const credentials = await readCredentials();
+          const credentialServices = credentials.map(
+            (credential) => credential.service
+          );
+
+          if (credentials.length === 0) {
+            console.log('it´s empty');
+            break;
+          }
+
+          const service = await selectService(credentialServices);
+          const selectedService = credentials.find(
+            (credential) => credential.service === service
+          );
+
+          if (selectedService !== undefined) {
+            selectedService.password = CryptoJS.AES.decrypt(
+              selectedService.password,
+              mainPassword
+            ).toString(CryptoJS.enc.Utf8);
+            console.log(selectedService);
+          }
         }
+
         break;
       case 'add':
         {
-          const newCredential = await addNewCredential();
-          console.log(newCredential);
+          let newCredential = await addNewCredential();
+          while (await isNewCredentialInDb(newCredential)) {
+            console.log(
+              `The chosen service ${newCredential.service} already exists. Please choose a new service name`
+            );
+            newCredential = await addNewCredential();
+          }
+          await writeCredentials(mainPassword, newCredential);
+          console.log(
+            `The service ${newCredential.service} has been added to the list`
+          );
         }
         break;
     }

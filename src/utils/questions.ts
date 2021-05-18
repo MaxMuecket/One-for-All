@@ -2,17 +2,17 @@ import inquirer from 'inquirer';
 import type { Command, Credential } from '../types';
 
 // export function askForMainPassword(): Promise<string> {
-export const askForMainPassword = (): Promise<string> => {
-  return inquirer
-    .prompt<{ mainPassword: string }>([
-      {
-        type: 'password',
-        name: 'mainPassword',
-        message: 'Enter main password （⊙ｏ⊙)',
-        mask: [],
-      },
-    ])
-    .then((answers) => answers.mainPassword);
+
+export const askForMainPassword = async (): Promise<string> => {
+  const answers = await inquirer.prompt<{ mainPassword: string }>([
+    {
+      type: 'password',
+      name: 'mainPassword',
+      message: 'Enter main password （⊙ｏ⊙)',
+      mask: [],
+    },
+  ]);
+  return answers.mainPassword;
 };
 
 export const askForCommand = async (): Promise<Command> => {
@@ -29,16 +29,26 @@ export const askForCommand = async (): Promise<Command> => {
   return answers.command;
 };
 
+export const selectService = async (services: string[]): Promise<string> => {
+  const answers = await inquirer.prompt<{ service: string }>({
+    type: 'list',
+    name: 'service',
+    message: 'Choose a service',
+    choices: services,
+  });
+  return answers.service;
+};
+
 export const addNewCredential = async (): Promise<Credential> => {
-  const newCredential = await inquirer.prompt<Credential>([
+  const answers = await inquirer.prompt<Credential>([
     {
-      type: 'text',
+      type: 'input',
       name: 'service',
       message: "What's the service?",
     },
 
     {
-      type: 'text',
+      type: 'input',
       name: 'username',
       message: "What's your username?",
     },
@@ -50,16 +60,5 @@ export const addNewCredential = async (): Promise<Credential> => {
       mask: [],
     },
   ]);
-  return newCredential;
-};
-
-export const selectService = async (services: string[]): Promise<string> => {
-  const listService = await inquirer.prompt<{ service: string }>({
-    type: 'list',
-    name: 'service',
-    message: 'Choose a service',
-    choices: services,
-  });
-
-  return listService.service;
+  return answers;
 };
