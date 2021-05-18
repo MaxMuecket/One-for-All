@@ -1,28 +1,30 @@
-import fs from 'fs/promises';
+// import fs from 'fs/promises';
 import type { Credential } from '../types';
 import CryptoJS from 'crypto-js';
+import { getCredentialsCollection } from './db';
+// import { MongoClient } from 'mongodb';
 
-type DB = {
-  credentials: Credential[];
-};
+// type DB = {
+//   credentials: Credential[];
+// };
 
 export const readCredentials = async (): Promise<Credential[]> => {
-  const response = await fs.readFile('./db.json', 'utf-8');
-  const data: DB = JSON.parse(response);
-  return data.credentials;
+  return await getCredentialsCollection().find().sort({ service: 1 }).toArray();
+  // const data: DB = JSON.parse(response);
+  // return cursor.toArray();
 };
 
 export const writeCredentials = async (
   mainPassword: string,
   newCredential: Credential
 ): Promise<void> => {
-  const oldCredential: Credential[] = await readCredentials();
+  // const oldCredential: Credential[] = await readCredentials();
 
   newCredential.password = CryptoJS.AES.encrypt(
     newCredential.password,
     mainPassword
   ).toString();
 
-  const newDB: DB = { credentials: [...oldCredential, newCredential] };
-  await fs.writeFile('./db.json', JSON.stringify(newDB, null, 2));
+  // const newDB: DB = { credentials: [...oldCredential, newCredential] };
+  await getCredentialsCollection().insertOne(newCredential);
 };
