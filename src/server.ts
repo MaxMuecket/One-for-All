@@ -28,9 +28,9 @@ connectDatabase(process.env.MONGO_URL).then(() => {
   });
 });
 
-app.delete('/api/credentials?service', async (_request, response) => {
-  const credential = await readCredentials();
-  response.json(credential);
-  await deleteCredential(credential);
-  response.send('Delete credential');
-});
+// app.delete('/api/credentials?service', async (_request, response) => {
+//   const credential = await readCredentials();
+//   response.json(credential);
+//   await deleteCredential(credential);
+//   response.send('Delete credential');
+// });
