@@ -59,7 +59,7 @@ const start = async () => {
               console.log(selectedCredential);
             }
           } else {
-            const deleted = await deleteCredential(selectedCredential);
+            const deleted = await deleteCredential(selectedCredential.service);
             if (deleted) {
               console.log('Deleted');
             } else {
