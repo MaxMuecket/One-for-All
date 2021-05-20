@@ -4,6 +4,7 @@ dotenv.config();
 import express from 'express';
 import {
   deleteCredential,
+  readCredential,
   readCredentials,
   writeCredential,
 } from './utils/credentials';
@@ -26,6 +27,11 @@ app.get('/api/credentials', async (_request, response) => {
 app.post('/api/credentials', async (request, response) => {
   await writeCredential('mainPassword', request.body);
   response.json();
+});
+
+app.get('/api/credentials/:service', async (request, response) => {
+  const credential = await readCredential(request.params.service);
+  response.json(credential);
 });
 
 connectDatabase(process.env.MONGO_URL).then(() => {
