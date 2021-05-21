@@ -1,8 +1,13 @@
 .App {
   text-align: center;
+  background-color: #4d85f5;
 }
 
-.App-logo {
+body {
+  background-color: #2350a8;
+}
+
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -39,4 +44,4 @@
 
 button {
   font-size: calc(10px + 2vmin);
-}
+} */
