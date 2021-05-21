@@ -17,6 +17,14 @@ export const readCredentials = async (): Promise<Credential[]> => {
   // return cursor.toArray();
 };
 
+export const readCredential = async (service: string): Promise<Credential> => {
+  const credential = await getCredentialsCollection().findOne({ service });
+  if (!credential) {
+    throw new Error(`Can not find credential ${service}!`);
+  }
+  return credential;
+};
+
 export const writeCredential = async (
   mainPassword: string,
   newCredential: Credential
@@ -48,10 +56,10 @@ export const selectCredential = async (): Promise<Credential> => {
   return selectedCredential;
 };
 
-export const deleteCredential = async (
-  credential: Credential
-): Promise<boolean> => {
-  const result = await getCredentialsCollection().deleteOne(credential);
+export const deleteCredential = async (service: string): Promise<boolean> => {
+  const result = await getCredentialsCollection().deleteOne({
+    service,
+  });
   if (result.deletedCount === undefined) {
     return false;
   }
