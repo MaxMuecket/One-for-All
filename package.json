@@ -6,11 +6,11 @@
     "cli:dev": "ts-node --project tsconfig.server.json src/cli",
     "server:dev": "tsnd --project tsconfig.server.json src/server",
     "server:build": "tsc --project tsconfig.server.json",
-    "client:build": "vite build",
+    "client:build": "tsc && vite build",
     "build": "npm run client:build && npm run server:build",
     "serve": "vite preview",
     "prepare": "husky install",
-    "test": "prettier --check . && eslint . && stylelint \"**/*.css\""
+    "test": "tsc && prettier --check . && eslint . && stylelint \"**/*.css\""
   },
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",
@@ -18,8 +18,11 @@
     "@types/inquirer": "^7.3.1",
     "@types/mongodb": "^3.6.12",
     "@types/node": "^15.0.2",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
+    "@vitejs/plugin-react-refresh": "^1.3.3",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "husky": "^6.0.0",
@@ -39,6 +42,8 @@
     "express": "^4.17.1",
     "gitmoji-cli": "^4.1.0",
     "inquirer": "^8.0.0",
-    "mongodb": "^3.6.6"
+    "mongodb": "^3.6.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }
