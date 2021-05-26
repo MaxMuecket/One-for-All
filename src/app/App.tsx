@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './App.module.css';
 import { Credential as CredentialType } from '../types';
 import Credential from './components/Credential';
@@ -7,23 +7,13 @@ import Hero from './components/Hero';
 
 function App(): JSX.Element {
   // const [count, setCount] = useState(0);
-  const credentials: CredentialType[] = [
-    {
-      service: 'Tri',
-      username: 'Tra',
-      password: 'Trulala',
-    },
-    {
-      service: 'Brain',
-      username: 'Neurons',
-      password: 'Dopamine',
-    },
-    {
-      service: 'Nature',
-      username: 'Tree',
-      password: 'Wind',
-    },
-  ];
+  const [credentials, setCredentials] = useState<CredentialType[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/credentials')
+      .then((response) => response.json())
+      .then(setCredentials);
+  }, []);
 
   const credentialElements = credentials.map((credential) => (
     <Credential key={credential.service} credential={credential} />
